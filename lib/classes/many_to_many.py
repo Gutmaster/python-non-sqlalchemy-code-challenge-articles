@@ -18,8 +18,10 @@ class Article:
     
     @title.setter
     def title(self, title):
-        if isinstance(title, str) and not hasattr(self, '_title'):
+        if isinstance(title, str) and not hasattr(self, '_title') and 5 <= len(title) <= 50:
             self._title = title
+        else:
+            raise Exception("Invalid title")
         
 class Author:
     def __init__(self, name):
@@ -35,6 +37,8 @@ class Author:
     def name(self, name):
         if isinstance(name, str) and len(name) and not hasattr(self, '_name'):
             self._name = name
+        else:
+            raise Exception("Invalid author name")
     
     def articles(self):
         return self._articles
@@ -50,11 +54,13 @@ class Author:
         return topics if topics else None
 
 class Magazine:
+    all = []
     def __init__(self, name, category):
         self.name = name
         self.category = category
         self._articles = []
         self._contributors = []
+        Magazine.all.append(self)
 
     @property
     def name(self):
@@ -64,6 +70,8 @@ class Magazine:
     def name(self, name):
         if isinstance(name, str) and 2 <= len(name) <= 16:
             self._name = name
+        else:
+            raise Exception("Invalid magazine name")
     
     @property
     def category(self):
@@ -73,6 +81,8 @@ class Magazine:
     def category(self, category):
         if isinstance(category, str) and len(category):
             self._category = category
+        else:
+            raise Exception("Invalid magazine category")
     
     def articles(self):
         return self._articles
@@ -95,3 +105,11 @@ class Magazine:
                         contributing_authors.append(contributor)
 
         return contributing_authors if contributing_authors else None
+    
+    @classmethod
+    def top_publisher(cls):
+        magazines = cls.all
+        if magazines:
+            most_articles = max(magazines, key=lambda magazine: len(magazine.articles()))
+            return most_articles if most_articles.articles() else None
+        return None
